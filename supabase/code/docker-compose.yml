@@ -24,7 +24,7 @@ services:
             {if (r.status !== 200) throw new Error(r.status)})\""
         ]
       timeout: 10s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       analytics:
@@ -131,7 +131,7 @@ services:
           "http://localhost:9999/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       db:
@@ -279,6 +279,10 @@ services:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     image: supabase/realtime:v2.76.5
     restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - realtime-dev.supabase-realtime
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -344,7 +348,7 @@ services:
           "http://storage:5000/status"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
       start_period: 10s
     environment:
@@ -392,7 +396,7 @@ services:
     healthcheck:
       test: [ "CMD", "imgproxy", "health" ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       IMGPROXY_BIND: ":5001"
@@ -404,9 +408,10 @@ services:
   meta:
     image: supabase/postgres-meta:v0.96.3
     restart: unless-stopped
+    healthcheck:
+      interval: 30s
     depends_on:
       db:
-        # Disable this if you are using an external Postgres database
         condition: service_healthy
     environment:
       PG_META_PORT: 8080
@@ -456,7 +461,7 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "curl -sSfL -o /dev/null http://localhost:4000/health" ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 10
     depends_on:
       db:
@@ -546,7 +551,7 @@ services:
           "http://vector:9001/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
