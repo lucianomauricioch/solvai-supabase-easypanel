@@ -22,7 +22,7 @@ services:
             (r.status !== 200) throw new Error(r.status)})"
         ]
       timeout: 10s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       analytics:
@@ -99,7 +99,7 @@ services:
           "http://localhost:9999/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       db:
@@ -190,6 +190,10 @@ services:
     # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
     image: supabase/realtime:v2.68.0
     restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - realtime-dev.supabase-realtime
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -204,7 +208,7 @@ services:
             ${ANON_KEY}\" http://localhost:4000/api/tenants/realtime-dev/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       PORT: 4000
@@ -241,7 +245,7 @@ services:
           "http://storage:5000/status"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       db:
@@ -276,7 +280,7 @@ services:
     healthcheck:
       test: [ "CMD", "imgproxy", "health" ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       IMGPROXY_BIND: ":5001"
@@ -287,6 +291,11 @@ services:
   meta:
     image: supabase/postgres-meta:v0.95.1
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:8080/health').then((r) => {if (r.status !== 200) throw new Error(r.status)})\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
@@ -332,7 +341,7 @@ services:
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:4000/health" ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 10
     depends_on:
       db:
@@ -425,7 +434,7 @@ services:
           "http://vector:9001/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
@@ -450,7 +459,7 @@ services:
           "/dev/null",
           "http://127.0.0.1:4000/api/health"
         ]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 5
     depends_on:
