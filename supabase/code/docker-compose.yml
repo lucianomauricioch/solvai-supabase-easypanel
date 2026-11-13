@@ -24,7 +24,7 @@ services:
             {if (r.status !== 200) throw new Error(r.status)})\""
         ]
       timeout: 10s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       analytics:
@@ -131,7 +131,7 @@ services:
           "http://localhost:9999/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     depends_on:
       db:
@@ -344,7 +344,7 @@ services:
           "http://storage:5000/status"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
       start_period: 10s
     environment:
@@ -392,7 +392,7 @@ services:
     healthcheck:
       test: [ "CMD", "imgproxy", "health" ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       IMGPROXY_BIND: ":5001"
@@ -456,7 +456,7 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "curl -sSfL -o /dev/null http://localhost:4000/health" ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 10
     depends_on:
       db:
@@ -546,7 +546,7 @@ services:
           "http://vector:9001/health"
         ]
       timeout: 5s
-      interval: 5s
+      interval: 30s
       retries: 3
     environment:
       LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
